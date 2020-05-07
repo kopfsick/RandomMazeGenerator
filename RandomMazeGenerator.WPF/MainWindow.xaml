@@ -1,12 +1,64 @@
-﻿<Window x:Class="RandomMazeGenerator.WPF.MainWindow"
+﻿<mah:MetroWindow  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls" x:Class="RandomMazeGenerator.WPF.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RandomMazeGenerator.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Maze Generator" Height="800" Width="800">
+    <mah:MetroWindow.Resources>
+        <local:MultiBoolToThicknessConverter x:Key="MultiBoolToThicknessConverter"/>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
 
-    </Grid>
-</Window>
+        <Style TargetType="{x:Type Border}" x:Key="MazeCellBorderStyle">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsOnStack}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource OnStackBrush}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding IsCurrent}" Value="True">
+                    <Setter Property="Background" Value="{DynamicResource IsCurrentBrush}"/>
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasBeenVisited}" Value="True">
+                    <Setter Property="BorderBrush" Value="{DynamicResource WallBrush}"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </mah:MetroWindow.Resources>
+    <DockPanel Background="{DynamicResource ProgramBackGroundBrush}" LastChildFill="True">
+        <StackPanel DockPanel.Dock="Top">
+            <Button Command="{Binding StartCommand}">Start</Button>
+            <mah:NumericUpDown Value="{Binding Width}" Minimum="1"
+                   Maximum="200"
+                   Interval="1"/>
+        </StackPanel>
+        <ItemsControl ItemsSource="{Binding Maze.Cells}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <Grid ShowGridLines="False" IsItemsHost="True" local:GridHelpers.RowCount="{Binding Maze.Height}" local:GridHelpers.ColumnCount="{Binding Maze.Width}">
+                    </Grid>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemContainerStyle>
+                <Style>
+                    <Setter Property="Grid.Row" Value="{Binding Y}"/>
+                    <Setter Property="Grid.Column" Value="{Binding X}"/>
+                </Style>
+            </ItemsControl.ItemContainerStyle>
+            <ItemsControl.ItemTemplate>
+                <ItemContainerTemplate>
+                    <Border Style="{StaticResource MazeCellBorderStyle}">
+                        <Border.BorderThickness>
+                            <MultiBinding Converter="{StaticResource MultiBoolToThicknessConverter}" ConverterParameter="1">
+                                <Binding Path="HasLeftWall"/>
+                                <Binding Path="HasTopWall"/>
+                                <Binding Path="HasRightWall"/>
+                                <Binding Path="HasBottomWall"/>
+                            </MultiBinding>
+                        </Border.BorderThickness>
+                    </Border>
+                </ItemContainerTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </DockPanel>
+</mah:MetroWindow>
