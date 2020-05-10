@@ -1,46 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace RandomMazeGenerator.WPF
 {
-
     public class DepthFirstRecursiveBacktrackingMazeAlgorithm
     {
-     
-        public async Task Generate(Maze maze, int stepDelayMillis, CancellationToken cancellationToken)
+        private readonly Random _random;
+        private readonly Maze _maze;
+        private readonly Stack<MazeCell> cellStack;
+        private MazeCell _currentCell;
+        private bool _finished;
+
+        public DepthFirstRecursiveBacktrackingMazeAlgorithm(Maze maze)
         {
-            var random = new Random();
+            _random = new Random();
+            _maze = maze;
+            cellStack = new Stack<MazeCell>();
 
-            var cellStack = new Stack<MazeCell>();
-            cellStack.Push(maze.Cells[0]);
+            var startCell = maze.Cells[0];
+            cellStack.Push(startCell);
+        }
 
-            while(cellStack.TryPop(out var currentCell))
+        public async Task Run(int updateDelayMillis, int stepsPerUpdate)
+        {
+            while(!_finished)
             {
-                currentCell.IsCurrent = true;
-                currentCell.IsOnStack = false;
-
-                var unvisitedNeighbours = GetNeighbours(maze, currentCell).Where(n => !n.HasBeenVisited).ToArray();
-                if(unvisitedNeighbours.Length > 0)
-                {
-                    cellStack.Push(currentCell);
-                    currentCell.IsOnStack = true;
-
-                    var randomUnvisitedNeighbour = unvisitedNeighbours[random.Next(unvisitedNeighbours.Length)];
-                    RemoveWallsBetween(currentCell, randomUnvisitedNeighbour);
-                    randomUnvisitedNeighbour.HasBeenVisited = true;
-                    cellStack.Push(randomUnvisitedNeighbour);
-                    randomUnvisitedNeighbour.IsOnStack = true;
-                }
-
-                if(cancellationToken.IsCancellationRequested)
-                    return;
-
-                await Task.Delay(stepDelayMillis).ConfigureAwait(false);
-                currentCell.IsCurrent = false;
+                Step(stepsPerUpdate);
+                await Task.Delay(updateDelayMillis);
             }
+        }
+
+        public void Step(int steps = 1)
+        {
+            for(int i = 0;i < steps;i++)
+            {
+                if(cellStack.Count > 0)
+                {
+                    var currentCell = cellStack.Pop();
+                    SetCurrentCell(currentCell);
+                    currentCell.IsOnStack = false;
+
+                    var unvisitedNeighbours = GetNeighbours(_maze, currentCell).Where(n => !n.HasBeenVisited).ToArray();
+                    if(unvisitedNeighbours.Length > 0)
+                    {
+                        cellStack.Push(currentCell);
+                        currentCell.IsOnStack = true;
+
+                        var randomUnvisitedNeighbour = unvisitedNeighbours[_random.Next(unvisitedNeighbours.Length)];
+                        RemoveWallsBetween(currentCell, randomUnvisitedNeighbour);
+                        randomUnvisitedNeighbour.HasBeenVisited = true;
+                        cellStack.Push(randomUnvisitedNeighbour);
+                        randomUnvisitedNeighbour.IsOnStack = true;
+                    }
+                }
+                else
+                {
+                    SetCurrentCell(null);
+                    _finished = true;
+                }
+            }
+        }
+
+        private void SetCurrentCell(MazeCell cell)
+        {
+            if(_currentCell != null)
+                _currentCell.IsCurrent = false;
+            if(cell != null)
+                cell.IsCurrent = true;
+            _currentCell = cell;
         }
 
         private void RemoveWallsBetween(MazeCell cell1, MazeCell cell2)

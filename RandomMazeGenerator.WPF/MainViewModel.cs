@@ -25,7 +25,7 @@ namespace RandomMazeGenerator.WPF
         private async Task Start()
         {
             Maze = new Maze(Width);
-            await Task.Run(async () => await new DepthFirstRecursiveBacktrackingMazeAlgorithm().Generate(Maze, 2000/(Maze.Cells.Length*2), CancellationToken.None)).ConfigureAwait(false);
+            await Task.Run(async () => await new DepthFirstRecursiveBacktrackingMazeAlgorithm(Maze).Run(2000/(Maze.Cells.Length*2), 1)).ConfigureAwait(false);
         }
 
         public ICommand StartCommand { get; set; }
