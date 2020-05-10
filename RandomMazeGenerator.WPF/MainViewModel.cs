@@ -1,6 +1,7 @@
 ﻿using MvvmCross.Commands;
 using System;
-using System.Threading;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,7 +16,16 @@ namespace RandomMazeGenerator.WPF
         {
             Width = 30;
             StartCommand = new MvxAsyncCommand(Start, CanStart, true);
+            SelectedAlgorithm = Algorithms.First();
         }
+
+        public IDictionary<string, Func<Maze, IStepableAlgorithm>> Algorithms {get;} = new Dictionary<string, Func<Maze, IStepableAlgorithm>>
+        {
+            { "Recursive Backtracker", m => new DepthFirstRecursiveBacktrackingMazeAlgorithm(m) },
+            { "Randomized Prim's Algorithm", m => new RandomizedPrimsMazeAlgorithm(m) }
+        };
+
+        public KeyValuePair<string, Func<Maze, IStepableAlgorithm>> SelectedAlgorithm {get;set;}
 
         private bool CanStart()
         {
@@ -25,7 +35,7 @@ namespace RandomMazeGenerator.WPF
         private async Task Start()
         {
             Maze = new Maze(Width);
-            await Task.Run(async () => await new DepthFirstRecursiveBacktrackingMazeAlgorithm(Maze).Run(2000/(Maze.Cells.Length*2), 1)).ConfigureAwait(false);
+            await Task.Run(async () => await SelectedAlgorithm.Value(Maze).Run(2000/(Maze.Cells.Length*2), 1)).ConfigureAwait(false);
         }
 
         public ICommand StartCommand { get; set; }

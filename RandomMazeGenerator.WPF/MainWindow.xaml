@@ -27,10 +27,11 @@
     </mah:MetroWindow.Resources>
     <DockPanel Background="{DynamicResource ProgramBackGroundBrush}" LastChildFill="True">
         <StackPanel DockPanel.Dock="Top">
-            <Button Command="{Binding StartCommand}">Start</Button>
             <mah:NumericUpDown Value="{Binding Width}" Minimum="1"
                    Maximum="200"
                    Interval="1"/>
+            <ComboBox ItemsSource="{Binding Algorithms}" DisplayMemberPath="Key" SelectedItem="{Binding SelectedAlgorithm}"/>
+            <Button Command="{Binding StartCommand}">Start</Button>
         </StackPanel>
         <ItemsControl ItemsSource="{Binding Maze.Cells}">
             <ItemsControl.ItemsPanel>

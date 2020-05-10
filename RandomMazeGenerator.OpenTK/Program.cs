@@ -20,7 +20,7 @@ namespace RandomMazeGenerator.OpenTK
     public class Window : GameWindow
     {
         private Maze _maze;
-        private DepthFirstRecursiveBacktrackingMazeAlgorithm _algorithm;
+        private IStepableAlgorithm _algorithm;
         private float _cellWidth;
         private int _stepsPerUpdate = 1;
         private bool _visualizeStack = false;
@@ -32,12 +32,13 @@ namespace RandomMazeGenerator.OpenTK
             TargetUpdateFrequency = 60;
 
             _visualizeStack = false;
-            _stepsPerUpdate = 2;
-            var mazeWidth = 100;
+            _stepsPerUpdate = 1;
+            var mazeWidth = 30;
             _maze = new Maze(mazeWidth);
             _cellWidth = 2f/mazeWidth;
 
             _algorithm = new DepthFirstRecursiveBacktrackingMazeAlgorithm(_maze);
+            _algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
         }
 
         protected override void OnResize(EventArgs e)
@@ -104,6 +105,16 @@ namespace RandomMazeGenerator.OpenTK
                         GL.Vertex2(topLeftX + _cellWidth, topLeftY + _cellWidth);
                     }
                     GL.End(); 
+                }
+                else
+                {
+                    GL.Color3(Color.Blue);
+                    GL.Begin(PrimitiveType.Quads);
+                    GL.Vertex2(topLeftX, topLeftY);
+                    GL.Vertex2(topLeftX+_cellWidth, topLeftY);
+                    GL.Vertex2(topLeftX+_cellWidth, topLeftY+_cellWidth);
+                    GL.Vertex2(topLeftX, topLeftY+_cellWidth);
+                    GL.End();
                 }
             }
 
