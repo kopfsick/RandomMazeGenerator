@@ -2,6 +2,7 @@
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using RandomMazeGenerator.WPF;
+using SharpNoise.Modules;
 using System;
 using System.Drawing;
 
@@ -24,6 +25,8 @@ namespace RandomMazeGenerator.OpenTK
         private float _cellWidth;
         private int _stepsPerUpdate = 1;
         private bool _visualizeStack = false;
+        private Module _noise = new Perlin();
+        private double _noiseOffset = 0;
 
         public Window() : base(720, 720, GraphicsMode.Default, "Random Maze Generator")
         {
@@ -32,7 +35,7 @@ namespace RandomMazeGenerator.OpenTK
             TargetUpdateFrequency = 60;
 
             _visualizeStack = false;
-            _stepsPerUpdate = 1;
+            _stepsPerUpdate = 2;
             var mazeWidth = 30;
             _maze = new Maze(mazeWidth);
             _cellWidth = 2f/mazeWidth;
@@ -49,6 +52,7 @@ namespace RandomMazeGenerator.OpenTK
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
             _algorithm.Step(_stepsPerUpdate);
+            _noiseOffset += 0.01;
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
@@ -81,7 +85,9 @@ namespace RandomMazeGenerator.OpenTK
                 if(cell.HasBeenVisited)
                 {
                     GL.Begin(PrimitiveType.Lines);
-                    GL.Color3(Color.Blue);
+
+                    var v = (float)((_noise.GetValue(cell.X/10d, cell.Y/10d, _noiseOffset)+1) *0.5);
+                    GL.Color3((1-v)*0.333,(1-v)*0.666, v);
 
                     if(cell.HasLeftWall)
                     {
