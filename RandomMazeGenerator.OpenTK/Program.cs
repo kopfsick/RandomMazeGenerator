@@ -25,7 +25,7 @@ namespace RandomMazeGenerator.OpenTK
         private float _cellWidth;
         private int _stepsPerUpdate = 1;
         private bool _visualizeStack = false;
-        private Module _noise = new Perlin();
+        private Module _noise = new Simplex();
         private double _noiseOffset = 0;
 
         public Window() : base(720, 720, GraphicsMode.Default, "Random Maze Generator")
@@ -35,13 +35,13 @@ namespace RandomMazeGenerator.OpenTK
             TargetUpdateFrequency = 60;
 
             _visualizeStack = false;
-            _stepsPerUpdate = 2;
-            var mazeWidth = 30;
+            _stepsPerUpdate = 1;
+            var mazeWidth = 50;
             _maze = new Maze(mazeWidth);
             _cellWidth = 2f/mazeWidth;
 
             _algorithm = new DepthFirstRecursiveBacktrackingMazeAlgorithm(_maze);
-            _algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
+            //_algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
         }
 
         protected override void OnResize(EventArgs e)
@@ -86,8 +86,8 @@ namespace RandomMazeGenerator.OpenTK
                 {
                     GL.Begin(PrimitiveType.Lines);
 
-                    var v = (float)((_noise.GetValue(cell.X/10d, cell.Y/10d, _noiseOffset)+1) *0.5);
-                    GL.Color3((1-v)*0.333,(1-v)*0.666, v);
+                    var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
+                    GL.Color3(0,0, 0.5 + v*0.5);
 
                     if(cell.HasLeftWall)
                     {
@@ -112,16 +112,18 @@ namespace RandomMazeGenerator.OpenTK
                     }
                     GL.End(); 
                 }
-                else
-                {
-                    GL.Color3(Color.Blue);
-                    GL.Begin(PrimitiveType.Quads);
-                    GL.Vertex2(topLeftX, topLeftY);
-                    GL.Vertex2(topLeftX+_cellWidth, topLeftY);
-                    GL.Vertex2(topLeftX+_cellWidth, topLeftY+_cellWidth);
-                    GL.Vertex2(topLeftX, topLeftY+_cellWidth);
-                    GL.End();
-                }
+                //else
+                //{
+                //    var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
+                //    GL.Color3((1-v)*0.333,(1-v)*0.666, v);
+                //    GL.Color3(0,0, 0.5 + v*0.5);
+                //    GL.Begin(PrimitiveType.Quads);
+                //    GL.Vertex2(topLeftX, topLeftY);
+                //    GL.Vertex2(topLeftX+_cellWidth, topLeftY);
+                //    GL.Vertex2(topLeftX+_cellWidth, topLeftY+_cellWidth);
+                //    GL.Vertex2(topLeftX, topLeftY+_cellWidth);
+                //    GL.End();
+                //}
             }
 
             SwapBuffers();
