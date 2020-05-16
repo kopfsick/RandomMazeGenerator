@@ -22,8 +22,10 @@ namespace RandomMazeGenerator.OpenTK
     {
         private Maze _maze;
         private IStepableAlgorithm _algorithm;
+        private AStarPathFindingAlgorithm _solvingAlgorithm;
         private float _cellWidth;
         private int _stepsPerUpdate = 1;
+        private int _stepsPerUpdateSolving;
         private bool _visualizeStack = false;
         private Module _noise = new Simplex();
         private double _noiseOffset = 0;
@@ -35,11 +37,13 @@ namespace RandomMazeGenerator.OpenTK
             TargetUpdateFrequency = 60;
 
             _visualizeStack = false;
-            _stepsPerUpdate = 1;
-            var mazeWidth = 50;
+            _stepsPerUpdate = 20;
+            _stepsPerUpdateSolving = 5;
+            var mazeWidth = 100;
             _maze = new Maze(mazeWidth);
             _cellWidth = 2f/mazeWidth;
 
+            _solvingAlgorithm = new AStarPathFindingAlgorithm(_maze);
             _algorithm = new DepthFirstRecursiveBacktrackingMazeAlgorithm(_maze);
             //_algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
         }
@@ -51,7 +55,10 @@ namespace RandomMazeGenerator.OpenTK
 
         protected override void OnUpdateFrame(FrameEventArgs e)
         {
-            _algorithm.Step(_stepsPerUpdate);
+            if(!_algorithm.IsFinished)
+                _algorithm.Step(_stepsPerUpdate);
+            else if(!_solvingAlgorithm.IsFinished)
+                _solvingAlgorithm.Step(_stepsPerUpdateSolving);
             _noiseOffset += 0.01;
         }
 
@@ -64,7 +71,9 @@ namespace RandomMazeGenerator.OpenTK
                 var topLeftX = cell.X * _cellWidth -1;
                 var topLeftY = cell.Y * _cellWidth -1;
 
-                if(cell.IsCurrent)
+                var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
+
+                if(cell.IsCurrent && (!_algorithm.IsFinished || !_solvingAlgorithm.IsFinished))
                 {
                     GL.Color3(Color.LightBlue);
                     GL.Begin(PrimitiveType.Quads);
@@ -86,7 +95,6 @@ namespace RandomMazeGenerator.OpenTK
                 {
                     GL.Begin(PrimitiveType.Lines);
 
-                    var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
                     GL.Color3(0,0, 0.5 + v*0.5);
 
                     if(cell.HasLeftWall)
@@ -110,7 +118,7 @@ namespace RandomMazeGenerator.OpenTK
                         GL.Vertex2(topLeftX, topLeftY + _cellWidth);
                         GL.Vertex2(topLeftX + _cellWidth, topLeftY + _cellWidth);
                     }
-                    GL.End(); 
+                    GL.End();
                 }
                 //else
                 //{
@@ -124,6 +132,30 @@ namespace RandomMazeGenerator.OpenTK
                 //    GL.Vertex2(topLeftX, topLeftY+_cellWidth);
                 //    GL.End();
                 //}
+
+
+                //Solving visualization
+                //if(_solvingAlgorithm.IsInOpenSet(cell))
+                //{
+                //    GL.Color3(Color.Red);
+                //    GL.Begin(PrimitiveType.Quads);
+                //    GL.Vertex2(topLeftX, topLeftY);
+                //    GL.Vertex2(topLeftX+_cellWidth, topLeftY);
+                //    GL.Vertex2(topLeftX+_cellWidth, topLeftY+_cellWidth);
+                //    GL.Vertex2(topLeftX, topLeftY+_cellWidth);
+                //    GL.End();
+                //}
+                if(_solvingAlgorithm.IsOnBestPath(cell))
+                {
+                    GL.Color3(0.5 + v*0.5, 0.5 + v*0.5,0);
+                    GL.Begin(PrimitiveType.Quads);
+                    double offset = _cellWidth / 10;
+                    GL.Vertex2(topLeftX + offset, topLeftY+ offset);
+                    GL.Vertex2(topLeftX + _cellWidth - offset, topLeftY+ offset);
+                    GL.Vertex2(topLeftX + _cellWidth - offset, topLeftY+ _cellWidth - offset);
+                    GL.Vertex2(topLeftX + offset, topLeftY+ _cellWidth - offset);
+                    GL.End();
+                }
             }
 
             SwapBuffers();

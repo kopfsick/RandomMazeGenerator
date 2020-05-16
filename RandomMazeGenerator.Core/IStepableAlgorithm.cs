@@ -6,5 +6,6 @@ namespace RandomMazeGenerator.WPF
     {
         Task Run(int updateDelayMillis, int stepsPerUpdate);
         void Step(int steps = 1);
+        bool IsFinished{get;}
     }
 }

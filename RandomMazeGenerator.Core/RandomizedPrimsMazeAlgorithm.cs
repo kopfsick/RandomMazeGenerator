@@ -4,12 +4,11 @@ using System.Linq;
 
 namespace RandomMazeGenerator.WPF
 {
-    public class RandomizedPrimsMazeAlgorithm : StepableAlgorithmBase
+    public class RandomizedPrimsMazeAlgorithm : StepableMazeAlgorithmBase
     {
         private readonly Random _random;
         private readonly Maze _maze;
         private readonly List<(MazeCell, MazeCell)> _adjacentCells;
-        private MazeCell _currentCell;
 
         public RandomizedPrimsMazeAlgorithm(Maze maze)
         {
@@ -46,15 +45,6 @@ namespace RandomMazeGenerator.WPF
                 SetCurrentCell(null);
                 Finish();
             }
-        }
-
-        public void SetCurrentCell(MazeCell cell)
-        {
-            if(_currentCell != null)
-                _currentCell.IsCurrent = false;
-            if(cell != null)
-                cell.IsCurrent = true;
-            _currentCell = cell;
         }
     }
 }

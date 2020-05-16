@@ -4,12 +4,11 @@ using System.Linq;
 
 namespace RandomMazeGenerator.WPF
 {
-    public class DepthFirstRecursiveBacktrackingMazeAlgorithm : StepableAlgorithmBase
+    public class DepthFirstRecursiveBacktrackingMazeAlgorithm : StepableMazeAlgorithmBase
     {
         private readonly Random _random;
         private readonly Maze _maze;
         private readonly Stack<MazeCell> cellStack;
-        private MazeCell _currentCell;
 
         public DepthFirstRecursiveBacktrackingMazeAlgorithm(Maze maze)
         {
@@ -47,15 +46,6 @@ namespace RandomMazeGenerator.WPF
                 SetCurrentCell(null);
                 Finish();
             }
-        }
-
-        public void SetCurrentCell(MazeCell cell)
-        {
-            if(_currentCell != null)
-                _currentCell.IsCurrent = false;
-            if(cell != null)
-                cell.IsCurrent = true;
-            _currentCell = cell;
         }
     }
 }

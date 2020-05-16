@@ -4,11 +4,11 @@ namespace RandomMazeGenerator.WPF
 {
     public abstract class StepableAlgorithmBase : IStepableAlgorithm
     {
-        private bool _finished;
+        public bool IsFinished { get; private set; }
 
         public async Task Run(int updateDelayMillis, int stepsPerUpdate)
         {
-            while(!_finished)
+            while(!IsFinished)
             {
                 Step(stepsPerUpdate);
                 await Task.Delay(updateDelayMillis);
@@ -17,11 +17,13 @@ namespace RandomMazeGenerator.WPF
 
         public void Step(int steps = 1)
         {
+
             for(int i = 0;i < steps;i++)
-                Step();
+                if(!IsFinished)
+                    Step();
         }
 
-        protected void Finish() => _finished = true;
+        protected void Finish() => IsFinished = true;
 
         protected abstract void Step();
     }
