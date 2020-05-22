@@ -3,23 +3,12 @@ using RandomMazeGenerator.WPF;
 using SharpNoise.Modules;
 using SkiaSharp;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace RandomMazeGenerator.Skia.WPF
 {
+
     public class Settings
     {
         [Slidable(1,100, 1, 10, true, 10)]
@@ -76,20 +65,24 @@ namespace RandomMazeGenerator.Skia.WPF
             _wallPaint = CreateStrokePaint(SKColors.Blue);
             _currentCellPaint = CreateFillPaint(SKColors.LightBlue);
 
-            DoGameLoopAsync();
+            var gameLoop = new SimpleGameLoop(60, DoGameLoopAsync);
+            gameLoop.Run();
         }
 
         public Settings Settings { get; set; }
 
         private async Task DoGameLoopAsync()
         {
-            while(true)
+            await Task.Run(() =>
             {
-                await Task.Run(() => Update());
+                if(!_algorithm.IsFinished)
+                    _algorithm.Step(Settings.StepsPerUpdate);
+                else if(!_solvingAlgorithm.IsFinished)
+                    _solvingAlgorithm.Step(Settings.StepsPerUpdateSolving);
                 _noiseOffset += 0.01;
-                SkiaElement.InvalidateVisual();
-                await Task.Delay(16);
-            }
+            });
+
+            SkiaElement.InvalidateVisual();
         }
 
         private void SkiaControl_PaintSurface(object sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
@@ -178,16 +171,5 @@ namespace RandomMazeGenerator.Skia.WPF
         {
             return new SKPaint() { Color = color, Style = SKPaintStyle.StrokeAndFill };
         }
-
-        private void Update()
-        {
-            if(!_algorithm.IsFinished)
-                _algorithm.Step(Settings.StepsPerUpdate);
-            else if(!_solvingAlgorithm.IsFinished)
-                _solvingAlgorithm.Step(Settings.StepsPerUpdateSolving);
-            _noiseOffset += 0.01;
-        }
-
-        
     }
 }
