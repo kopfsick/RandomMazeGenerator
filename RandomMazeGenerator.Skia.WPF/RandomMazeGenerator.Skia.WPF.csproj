@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp.Views.WPF" Version="1.68.2.1" />
+    <PackageReference Include="PropertyTools.Wpf" Version="3.1.0-alpha0041" />
     <PackageReference Include="SharpNoise" Version="0.12.1.1" />
   </ItemGroup>
 

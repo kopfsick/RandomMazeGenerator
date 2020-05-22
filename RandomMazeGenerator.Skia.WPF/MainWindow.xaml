@@ -3,10 +3,16 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:RandomMazeGenerator.Skia.WPF" xmlns:wpf="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
+        xmlns:pt="http://propertytools.org/wpf" xmlns:wpf="clr-namespace:SkiaSharp.Views.WPF;assembly=SkiaSharp.Views.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="550" Width="800">
     <Grid>
-        <wpf:SKElement x:Name="SkiaElement" PaintSurface="SkiaElement_PaintSurface"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="250"/>
+        </Grid.ColumnDefinitions>
+        <wpf:SKElement Grid.Column="0" x:Name="SkiaElement" PaintSurface="SkiaElement_PaintSurface"/>
+        <pt:PropertyGrid Grid.Column="1" x:Name="PropertyGrid">
+        </pt:PropertyGrid>
     </Grid>
 </Window>
