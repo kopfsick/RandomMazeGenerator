@@ -20,6 +20,7 @@ namespace RandomMazeGenerator.Skia.WPF
         public int StepsPerUpdateSolving { get; set; } = 10;
 
         public bool VizualizeStack { get; set; } = false;
+        public bool DisplayFPS { get; set; } = true;
     }
 
     /// <summary>
@@ -38,6 +39,8 @@ namespace RandomMazeGenerator.Skia.WPF
         private SKPaint _onStackPaint;
         private SKPaint _wallPaint;
         private SKPaint _currentCellPaint;
+        private SKPaint _fpsCounterPaint;
+        private SimpleGameLoop _gameLoop;
 
         public MainWindow()
         {
@@ -64,9 +67,11 @@ namespace RandomMazeGenerator.Skia.WPF
             _onStackPaint = CreateFillPaint(SKColors.Blue);
             _wallPaint = CreateStrokePaint(SKColors.Blue);
             _currentCellPaint = CreateFillPaint(SKColors.LightBlue);
+            _fpsCounterPaint = CreateFillPaint(SKColors.LightBlue);
+            _fpsCounterPaint.TextSize = 13;
 
-            var gameLoop = new SimpleGameLoop(60, DoGameLoopAsync);
-            gameLoop.Run();
+            _gameLoop = new SimpleGameLoop(120, DoGameLoopAsync);
+            _gameLoop.Run();
         }
 
         public Settings Settings { get; set; }
@@ -158,6 +163,11 @@ namespace RandomMazeGenerator.Skia.WPF
 
 
                     canvas.DrawRect(topLeftX + widthOffset, topLeftY + heightOffset, _cellWidth - widthOffset, _cellHeight - heightOffset, _bestCellPaint);
+                }
+
+                if(Settings.DisplayFPS)
+                {
+                    canvas.DrawText(_gameLoop.CurrentAverageFPS.ToString(),new SKPoint(20, 20), _fpsCounterPaint);
                 }
             }
         }
