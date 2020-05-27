@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RandomMazeGenerator.WPF
+namespace RandomMazeGenerator.Core
 {
 
     public class AStarPathFindingAlgorithm : StepableMazeAlgorithmBase
@@ -20,11 +20,11 @@ namespace RandomMazeGenerator.WPF
 
         public AStarPathFindingAlgorithm(Maze maze)
         {
-            _startCell = maze.Cells[MazeOperations.ToIndex(0,0, maze.Width)];
-            _endCell = maze.Cells[MazeOperations.ToIndex(maze.Width-1,maze.Height-1, maze.Width)];
+            _startCell = maze.Cells[MazeOperations.ToIndex(0, 0, maze.Width)];
+            _endCell = maze.Cells[MazeOperations.ToIndex(maze.Width - 1, maze.Height - 1, maze.Width)];
 
-            _startCell = maze.Cells[MazeOperations.ToIndex(maze.Width-1,0, maze.Width)];
-            _endCell = maze.Cells[MazeOperations.ToIndex(0,maze.Height-1, maze.Width)];
+            _startCell = maze.Cells[MazeOperations.ToIndex(maze.Width - 1, 0, maze.Width)];
+            _endCell = maze.Cells[MazeOperations.ToIndex(0, maze.Height - 1, maze.Width)];
 
             CurrentBestPath = new List<MazeCell>();
             _openSet = new HashSet<MazeCell>();
@@ -43,7 +43,7 @@ namespace RandomMazeGenerator.WPF
 
         private int CalculateHeuristic(MazeCell cell)
         {
-            return Math.Abs(cell.X-_endCell.X) + Math.Abs(cell.Y-_endCell.Y);
+            return Math.Abs(cell.X - _endCell.X) + Math.Abs(cell.Y - _endCell.Y);
         }
 
         protected override void Step()
@@ -88,7 +88,7 @@ namespace RandomMazeGenerator.WPF
         {
             CurrentBestPath.Clear();
             CurrentBestPath.Add(currentCell);
-            
+
             var temp = currentCell;
             while(_cameFrom.TryGetValue(temp, out var previous))
             {

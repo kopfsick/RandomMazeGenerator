@@ -1,11 +1,11 @@
 ﻿using System.Threading.Tasks;
 
-namespace RandomMazeGenerator.WPF
+namespace RandomMazeGenerator.Core
 {
     public interface IStepableAlgorithm
     {
         Task Run(int updateDelayMillis, int stepsPerUpdate);
         void Step(int steps = 1);
-        bool IsFinished{get;}
+        bool IsFinished { get; }
     }
 }

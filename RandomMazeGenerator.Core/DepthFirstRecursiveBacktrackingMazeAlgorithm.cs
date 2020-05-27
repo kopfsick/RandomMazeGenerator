@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RandomMazeGenerator.WPF
+namespace RandomMazeGenerator.Core
 {
     public class DepthFirstRecursiveBacktrackingMazeAlgorithm : StepableMazeAlgorithmBase
     {

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
-namespace RandomMazeGenerator.WPF
+namespace RandomMazeGenerator.Core
 {
 
     public static class MazeOperations
@@ -61,7 +59,7 @@ namespace RandomMazeGenerator.WPF
 
         public static int ToIndex(int x, int y, int width)
         {
-            return (width * y) + x;
+            return width * y + x;
         }
     }
 }

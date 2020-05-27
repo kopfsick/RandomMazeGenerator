@@ -1,5 +1,5 @@
 ﻿using PropertyTools.DataAnnotations;
-using RandomMazeGenerator.WPF;
+using RandomMazeGenerator.Core;
 using SharpNoise.Modules;
 using SkiaSharp;
 using System;

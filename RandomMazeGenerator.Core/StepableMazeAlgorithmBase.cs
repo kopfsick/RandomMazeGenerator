@@ -1,4 +1,4 @@
-﻿namespace RandomMazeGenerator.WPF
+﻿namespace RandomMazeGenerator.Core
 {
     public abstract class StepableMazeAlgorithmBase : StepableAlgorithmBase
     {

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace RandomMazeGenerator.WPF
+namespace RandomMazeGenerator.Core
 {
     public abstract class StepableAlgorithmBase : IStepableAlgorithm
     {

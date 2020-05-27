@@ -1,7 +1,7 @@
 ﻿using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using RandomMazeGenerator.WPF;
+using RandomMazeGenerator.Core;
 using SharpNoise.Modules;
 using System;
 using System.Drawing;
