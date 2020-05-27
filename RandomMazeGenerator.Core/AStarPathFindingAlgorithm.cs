@@ -13,10 +13,9 @@ namespace RandomMazeGenerator.WPF
         private Dictionary<MazeCell, int> _fScore;
         private MazeCell _startCell;
         private MazeCell _endCell;
-        private List<MazeCell> _bestPath;
         private readonly Maze _maze;
 
-        public bool IsOnBestPath(MazeCell cell) => _bestPath?.Contains(cell) ?? false;
+        public bool IsOnBestPath(MazeCell cell) => CurrentBestPath?.Contains(cell) ?? false;
         public bool IsInOpenSet(MazeCell cell) => _openSet?.Contains(cell) ?? false;
 
         public AStarPathFindingAlgorithm(Maze maze)
@@ -27,6 +26,7 @@ namespace RandomMazeGenerator.WPF
             _startCell = maze.Cells[MazeOperations.ToIndex(maze.Width-1,0, maze.Width)];
             _endCell = maze.Cells[MazeOperations.ToIndex(0,maze.Height-1, maze.Width)];
 
+            CurrentBestPath = new List<MazeCell>();
             _openSet = new HashSet<MazeCell>();
             _cameFrom = new Dictionary<MazeCell, MazeCell>();
             _gScore = new Dictionary<MazeCell, int>();
@@ -38,6 +38,8 @@ namespace RandomMazeGenerator.WPF
             _fScore[_startCell] = 0;
             _maze = maze;
         }
+
+        public List<MazeCell> CurrentBestPath { get; }
 
         private int CalculateHeuristic(MazeCell cell)
         {
@@ -73,7 +75,7 @@ namespace RandomMazeGenerator.WPF
                     }
                 }
 
-                _bestPath = CreateCurrentBestPath(currentCell);
+                UpdateCurrentBestPath(currentCell);
             }
             else
             {
@@ -82,18 +84,17 @@ namespace RandomMazeGenerator.WPF
             }
         }
 
-        private List<MazeCell> CreateCurrentBestPath(MazeCell currentCell)
+        private void UpdateCurrentBestPath(MazeCell currentCell)
         {
-            var bestPath = new List<MazeCell> { currentCell };
-
+            CurrentBestPath.Clear();
+            CurrentBestPath.Add(currentCell);
+            
             var temp = currentCell;
             while(_cameFrom.TryGetValue(temp, out var previous))
             {
-                bestPath.Add(previous);
+                CurrentBestPath.Add(previous);
                 temp = previous;
             }
-
-            return bestPath;
         }
 
         private int GetGScore(MazeCell currentCell)
