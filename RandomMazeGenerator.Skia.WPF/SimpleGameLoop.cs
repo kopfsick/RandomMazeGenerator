@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace RandomMazeGenerator.Skia.WPF
@@ -10,7 +12,6 @@ namespace RandomMazeGenerator.Skia.WPF
         private TimeSpan _targetUpdateTimeSpan;
         private int _fpsCounterFramesRendered;
         private DateTime _lastFpsUpdate;
-        private DateTime _lastUpdate;
 
         public SimpleGameLoop(int targetFrameRate, Func<Task> updateFunction)
         {
@@ -30,31 +31,40 @@ namespace RandomMazeGenerator.Skia.WPF
             }
         }
 
-        public async Task Run()
+        public Task Run()
         {
-            _lastFpsUpdate = DateTime.Now;
-            _lastUpdate = DateTime.Now;
-
-            while(true)
+            return Task.Run(async () =>
             {
-                _lastUpdate = DateTime.Now;
-                await _updateFunction();
+                _lastFpsUpdate = DateTime.Now;
+                var framewatch = new Stopwatch();
 
-                _fpsCounterFramesRendered++;
-
-                double secondsSinceLastFPSUpdate = (DateTime.Now - _lastFpsUpdate).TotalSeconds;
-                if(secondsSinceLastFPSUpdate >= 1)
+                while(true)
                 {
-                    CurrentAverageFPS = _fpsCounterFramesRendered/secondsSinceLastFPSUpdate;
-                    _fpsCounterFramesRendered = 0;
-                    _lastFpsUpdate = DateTime.Now;
+                    framewatch.Restart();
+                    await _updateFunction();
+
+                    var alreadyElapsed = framewatch.Elapsed;
+                    var shouldWait = _targetUpdateTimeSpan - alreadyElapsed;
+
+                    //while(framewatch.Elapsed < _targetUpdateTimeSpan)
+                    //{
+                    //    Thread.Yield();
+                    //}
+                    if(shouldWait > TimeSpan.Zero)
+                        await Task.Delay(shouldWait);
+
+                    _fpsCounterFramesRendered++;
+
+                    double secondsSinceLastFPSUpdate = (DateTime.Now - _lastFpsUpdate).TotalSeconds;
+                    if(secondsSinceLastFPSUpdate >= 1)
+                    {
+                        CurrentAverageFPS = _fpsCounterFramesRendered/secondsSinceLastFPSUpdate;
+                        _fpsCounterFramesRendered = 0;
+                        _lastFpsUpdate = DateTime.Now;
+                    }
                 }
 
-
-                var alreadyElapsed = DateTime.Now - _lastUpdate;
-                var shouldWait = _targetUpdateTimeSpan - alreadyElapsed;
-                await Task.Delay((int)Math.Max(shouldWait.TotalMilliseconds, 0));
-            }
+            });
         }
     }
 }

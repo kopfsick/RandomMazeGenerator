@@ -50,7 +50,7 @@ namespace RandomMazeGenerator.Skia.WPF
             {
                 StepsPerUpdate = 10,
                 StepsPerUpdateSolving = 10
-                };
+            };
 
             PropertyGrid.SelectedObject = Settings;
 
@@ -70,106 +70,94 @@ namespace RandomMazeGenerator.Skia.WPF
             _fpsCounterPaint = CreateFillPaint(SKColors.LightBlue);
             _fpsCounterPaint.TextSize = 13;
 
-            _gameLoop = new SimpleGameLoop(120, DoGameLoopAsync);
+            _gameLoop = new SimpleGameLoop(60, DoGameLoopAsync);
             _gameLoop.Run();
         }
 
         public Settings Settings { get; set; }
 
-        private async Task DoGameLoopAsync()
+        private Task DoGameLoopAsync()
         {
-            await Task.Run(() =>
-            {
-                if(!_algorithm.IsFinished)
-                    _algorithm.Step(Settings.StepsPerUpdate);
-                else if(!_solvingAlgorithm.IsFinished)
-                    _solvingAlgorithm.Step(Settings.StepsPerUpdateSolving);
-                _noiseOffset += 0.01;
-            });
+            if(!_algorithm.IsFinished)
+                _algorithm.Step(Settings.StepsPerUpdate);
+            else if(!_solvingAlgorithm.IsFinished)
+                _solvingAlgorithm.Step(Settings.StepsPerUpdateSolving);
+            _noiseOffset += 0.01;
 
-            SkiaElement.InvalidateVisual();
-        }
+            SkiaElement.Dispatcher.Invoke(() => SkiaElement.InvalidateVisual());
 
-        private void SkiaControl_PaintSurface(object sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
-        {
-            SKCanvas canvas = e.Surface.Canvas;
-
-            Draw(e, canvas);
+            return Task.CompletedTask;
         }
 
         private void SkiaElement_PaintSurface(object sender, SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e)
         {
-            SKCanvas canvas = e.Surface.Canvas;
-
-            Draw(e, canvas);
+            Draw(e.Info.Width, e.Info.Height, e.Surface.Canvas);
         }
 
-        private void Draw(SkiaSharp.Views.Desktop.SKPaintSurfaceEventArgs e, SKCanvas canvas)
+        private void Draw(int width, int height, SKCanvas canvas)
         {
             canvas.Clear(SKColors.Black);
 
-            _cellWidth = ((float)e.Info.Width) / _maze.Width;
-            _cellHeight = ((float)e.Info.Height) / _maze.Height;
+            _cellWidth = ((float)width) / _maze.Width;
+            _cellHeight = ((float)height) / _maze.Height;
 
             foreach(var cell in _maze.Cells)
             {
                 var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
                 float v1 = (127 + (v * 128));
-                _wallPaint.Color = new SKColor(0,0, (byte)Math.Clamp(v1, 0, 255));
+                SKColor noiseColor = new SKColor(0, 0, (byte)Clamp(v1, 0, 255));
+                _wallPaint.Color = noiseColor;
+                _onStackPaint.Color = noiseColor;
 
                 var topLeftX = cell.X * _cellWidth - 1;
                 var topLeftY = cell.Y * _cellHeight - 1;
 
                 if(cell.IsCurrent && (!_algorithm.IsFinished || !_solvingAlgorithm.IsFinished))
-                {
                     canvas.DrawRect(topLeftX, topLeftY, _cellWidth, _cellHeight, _currentCellPaint);
-                }
 
                 if(cell.IsOnStack && Settings.VizualizeStack)
-                {
-                    float heightOffset = _cellHeight / 10;
-                    float widthOffset = _cellWidth / 10;
-
-                    heightOffset = 0;
-                    widthOffset = 0;
-
-                    canvas.DrawRect(topLeftX + widthOffset, topLeftY + heightOffset, _cellWidth - widthOffset, _cellHeight - heightOffset, _onStackPaint);
-                }
+                    canvas.DrawRect(topLeftX, topLeftY, _cellWidth, _cellHeight, _onStackPaint);
 
                 if(cell.HasBeenVisited)
                 {
                     if(cell.HasLeftWall)
-                    {
                         canvas.DrawLine(topLeftX, topLeftY, topLeftX, topLeftY + _cellHeight, _wallPaint);
-                    }
                     if(cell.HasTopWall)
-                    {
                         canvas.DrawLine(topLeftX, topLeftY, topLeftX + _cellWidth, topLeftY, _wallPaint);
-                    }
                     if(cell.HasRightWall)
-                    {
                         canvas.DrawLine(topLeftX + _cellWidth, topLeftY, topLeftX + _cellWidth, topLeftY + _cellHeight, _wallPaint);
-                    }
                     if(cell.HasBottomWall)
-                    {
                         canvas.DrawLine(topLeftX, topLeftY + _cellHeight, topLeftX + _cellWidth, topLeftY + _cellHeight, _wallPaint);
-                    }
-                }
-
-                if(_solvingAlgorithm.IsOnBestPath(cell))
-                {
-                    float heightOffset = _cellHeight / 10;
-                    float widthOffset = _cellWidth / 10;
-
-
-                    canvas.DrawRect(topLeftX + widthOffset, topLeftY + heightOffset, _cellWidth - widthOffset, _cellHeight - heightOffset, _bestCellPaint);
-                }
-
-                if(Settings.DisplayFPS)
-                {
-                    canvas.DrawText(_gameLoop.CurrentAverageFPS.ToString(),new SKPoint(20, 20), _fpsCounterPaint);
                 }
             }
+
+            var bestPath = _solvingAlgorithm.CurrentBestPath;
+
+            for(int i = 0;i < bestPath.Count - 1;i++)
+            {
+                var currentCellX = CellMiddleX(bestPath[i], _cellWidth);
+                var currentCellY = CellMiddleY(bestPath[i], _cellHeight);
+
+                var nextCellX = CellMiddleX(bestPath[i+1], _cellWidth);
+                var nextCellY = CellMiddleY(bestPath[i+1], _cellHeight);
+
+                canvas.DrawLine(currentCellX, currentCellY, nextCellX, nextCellY, _bestCellPaint);
+            }
+            
+            if(Settings.DisplayFPS)
+            {
+                canvas.DrawText(_gameLoop.CurrentAverageFPS.ToString(), new SKPoint(20, 20), _fpsCounterPaint);
+            }
+
+            canvas.Flush();
+        }
+
+        private float CellMiddleX(MazeCell cell, float cellWidth) => (cell.X + 0.5f) * cellWidth;
+        private float CellMiddleY(MazeCell cell, float cellHeight) => (cell.Y + 0.5f) * cellHeight;
+
+        private float Clamp(float v1, float min, float max)
+        {
+            return Math.Min(Math.Max(v1, min), max);
         }
 
         private static SKPaint CreateStrokePaint(SKColor color)
