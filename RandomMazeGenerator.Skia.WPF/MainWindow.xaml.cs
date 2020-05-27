@@ -101,13 +101,13 @@ namespace RandomMazeGenerator.Skia.WPF
             _cellWidth = ((float)width) / _maze.Width;
             _cellHeight = ((float)height) / _maze.Height;
 
-            foreach(var cell in _maze.Cells)
+            Parallel.ForEach(_maze.Cells, cell => { 
             {
-                var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
-                float v1 = (127 + (v * 128));
-                SKColor noiseColor = new SKColor(0, 0, (byte)Clamp(v1, 0, 255));
-                _wallPaint.Color = noiseColor;
-                _onStackPaint.Color = noiseColor;
+                //var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
+                //float v1 = (127 + (v * 128));
+                //SKColor noiseColor = new SKColor(0, 0, (byte)Clamp(v1, 0, 255));
+                //_wallPaint.Color = noiseColor;
+                //_onStackPaint.Color = noiseColor;
 
                 var topLeftX = cell.X * _cellWidth - 1;
                 var topLeftY = cell.Y * _cellHeight - 1;
@@ -130,6 +130,7 @@ namespace RandomMazeGenerator.Skia.WPF
                         canvas.DrawLine(topLeftX, topLeftY + _cellHeight, topLeftX + _cellWidth, topLeftY + _cellHeight, _wallPaint);
                 }
             }
+                });
 
             var bestPath = _solvingAlgorithm.CurrentBestPath;
 
