@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace RandomMazeGenerator.Skia.WPF
+namespace Kopfsick.CreativeCoding.Gameloops
 {
     public class SimpleGameLoop
     {
@@ -58,7 +58,7 @@ namespace RandomMazeGenerator.Skia.WPF
                     double secondsSinceLastFPSUpdate = (DateTime.Now - _lastFpsUpdate).TotalSeconds;
                     if(secondsSinceLastFPSUpdate >= 1)
                     {
-                        CurrentAverageFPS = _fpsCounterFramesRendered/secondsSinceLastFPSUpdate;
+                        CurrentAverageFPS = _fpsCounterFramesRendered / secondsSinceLastFPSUpdate;
                         _fpsCounterFramesRendered = 0;
                         _lastFpsUpdate = DateTime.Now;
                     }

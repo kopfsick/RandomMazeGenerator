@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomMazeGenerator.Core", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomMazeGenerator.OpenTK", "RandomMazeGenerator.OpenTK\RandomMazeGenerator.OpenTK.csproj", "{A32A25E7-F30B-46C8-B073-61A42E16F6CC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomMazeGenerator.Skia.WPF", "RandomMazeGenerator.Skia.WPF\RandomMazeGenerator.Skia.WPF.csproj", "{E7683DDB-1558-4F37-BF59-7002010B4377}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomMazeGenerator.Skia.WPF", "RandomMazeGenerator.Skia.WPF\RandomMazeGenerator.Skia.WPF.csproj", "{E7683DDB-1558-4F37-BF59-7002010B4377}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kopfsick.CreativeCoding", "Kopfsick.CreativeCoding\Kopfsick.CreativeCoding.csproj", "{427BDB58-EF16-45F0-BC90-FBDCACE57668}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E7683DDB-1558-4F37-BF59-7002010B4377}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7683DDB-1558-4F37-BF59-7002010B4377}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7683DDB-1558-4F37-BF59-7002010B4377}.Release|Any CPU.Build.0 = Release|Any CPU
+		{427BDB58-EF16-45F0-BC90-FBDCACE57668}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{427BDB58-EF16-45F0-BC90-FBDCACE57668}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{427BDB58-EF16-45F0-BC90-FBDCACE57668}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{427BDB58-EF16-45F0-BC90-FBDCACE57668}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

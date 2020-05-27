@@ -1,4 +1,5 @@
-﻿using MvvmCross.Commands;
+﻿using Kopfsick.CreativeCoding.Algorithms;
+using MvvmCross.Commands;
 using RandomMazeGenerator.Core;
 using System;
 using System.Collections.Generic;

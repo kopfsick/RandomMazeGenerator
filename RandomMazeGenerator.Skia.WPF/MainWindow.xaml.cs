@@ -1,4 +1,6 @@
-﻿using PropertyTools.DataAnnotations;
+﻿using Kopfsick.CreativeCoding.Algorithms;
+using Kopfsick.CreativeCoding.Gameloops;
+using PropertyTools.DataAnnotations;
 using RandomMazeGenerator.Core;
 using SharpNoise.Modules;
 using SkiaSharp;

@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace RandomMazeGenerator.Core
+namespace Kopfsick.CreativeCoding.Algorithms
 {
     public abstract class StepableAlgorithmBase : IStepableAlgorithm
     {

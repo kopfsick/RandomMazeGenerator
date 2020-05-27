@@ -1,4 +1,6 @@
-﻿namespace RandomMazeGenerator.Core
+﻿using Kopfsick.CreativeCoding.Algorithms;
+
+namespace RandomMazeGenerator.Core
 {
     public abstract class StepableMazeAlgorithmBase : StepableAlgorithmBase
     {

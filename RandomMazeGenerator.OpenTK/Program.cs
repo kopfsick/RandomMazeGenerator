@@ -1,4 +1,5 @@
-﻿using OpenTK;
+﻿using Kopfsick.CreativeCoding.Algorithms;
+using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using RandomMazeGenerator.Core;
