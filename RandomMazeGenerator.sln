@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomMazeGenerator.Skia.WP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kopfsick.CreativeCoding", "Kopfsick.CreativeCoding\Kopfsick.CreativeCoding.csproj", "{427BDB58-EF16-45F0-BC90-FBDCACE57668}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomMazeGenerator.MonoGame", "RandomMazeGenerator.MonoGame\RandomMazeGenerator.MonoGame.csproj", "{B7553A64-97FF-4796-8676-CF49AAF1CE5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{427BDB58-EF16-45F0-BC90-FBDCACE57668}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{427BDB58-EF16-45F0-BC90-FBDCACE57668}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{427BDB58-EF16-45F0-BC90-FBDCACE57668}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7553A64-97FF-4796-8676-CF49AAF1CE5D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7553A64-97FF-4796-8676-CF49AAF1CE5D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7553A64-97FF-4796-8676-CF49AAF1CE5D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7553A64-97FF-4796-8676-CF49AAF1CE5D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
