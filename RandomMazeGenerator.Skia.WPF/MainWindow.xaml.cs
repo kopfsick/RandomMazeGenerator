@@ -7,17 +7,18 @@ using SkiaSharp;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace RandomMazeGenerator.Skia.WPF
 {
 
     public class Settings
     {
-        [Slidable(1,100, 1, 10, true, 10)]
+        [Slidable(1,500, 1, 10, true, 10)]
         [HeaderPlacement(HeaderPlacement.Above)]
         public int StepsPerUpdate { get; set; } = 10;
         
-        [Slidable(1,100, 1, 10, true, 10)]
+        [Slidable(1,500, 1, 10, true, 10)]
         [HeaderPlacement(HeaderPlacement.Above)]
         public int StepsPerUpdateSolving { get; set; } = 10;
 
@@ -42,7 +43,7 @@ namespace RandomMazeGenerator.Skia.WPF
         private SKPaint _wallPaint;
         private SKPaint _currentCellPaint;
         private SKPaint _fpsCounterPaint;
-        private SimpleGameLoop _gameLoop;
+        //private SimpleGameLoop _gameLoop;
 
         public MainWindow()
         {
@@ -56,13 +57,13 @@ namespace RandomMazeGenerator.Skia.WPF
 
             PropertyGrid.SelectedObject = Settings;
 
-            var mazeWidth = 100;
+            var mazeWidth = 50;
             _maze = new Maze(mazeWidth);
             _cellWidth = 2f/mazeWidth;
 
             _solvingAlgorithm = new AStarPathFindingAlgorithm(_maze);
             _algorithm = new DepthFirstRecursiveBacktrackingMazeAlgorithm(_maze);
-            //_algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
+            _algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
 
 
             _bestCellPaint = CreateFillPaint(SKColors.Yellow);
@@ -72,8 +73,15 @@ namespace RandomMazeGenerator.Skia.WPF
             _fpsCounterPaint = CreateFillPaint(SKColors.LightBlue);
             _fpsCounterPaint.TextSize = 13;
 
-            _gameLoop = new SimpleGameLoop(60, DoGameLoopAsync);
-            _gameLoop.Run();
+            CompositionTarget.Rendering += hjhgj;
+
+            //_gameLoop = new SimpleGameLoop(60, DoGameLoopAsync);
+            //_gameLoop.Run();
+        }
+
+        private void hjhgj(object sender, EventArgs e)
+        {
+            DoGameLoopAsync();
         }
 
         public Settings Settings { get; set; }
@@ -86,8 +94,8 @@ namespace RandomMazeGenerator.Skia.WPF
                 _solvingAlgorithm.Step(Settings.StepsPerUpdateSolving);
             _noiseOffset += 0.01;
 
-            SkiaElement.Dispatcher.Invoke(() => SkiaElement.InvalidateVisual());
-
+            //SkiaElement.Dispatcher.Invoke(() => SkiaElement.InvalidateVisual());
+            SkiaElement.InvalidateVisual();
             return Task.CompletedTask;
         }
 
@@ -149,7 +157,7 @@ namespace RandomMazeGenerator.Skia.WPF
             
             if(Settings.DisplayFPS)
             {
-                canvas.DrawText(_gameLoop.CurrentAverageFPS.ToString(), new SKPoint(20, 20), _fpsCounterPaint);
+                //canvas.DrawText(_gameLoop.CurrentAverageFPS.ToString(), new SKPoint(20, 20), _fpsCounterPaint);
             }
 
             canvas.Flush();
