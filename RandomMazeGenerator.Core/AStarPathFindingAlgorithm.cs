@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -60,7 +60,7 @@ namespace RandomMazeGenerator.Core
                 else
                 {
                     _openSet.Remove(currentCell);
-                    foreach(var neighbour in MazeOperations.GetConnectedNeighbours(_maze, currentCell))
+                    foreach(var neighbour in MazeOperations.GetConnectedNeighbours(_maze, currentCell).ToArray())
                     {
                         var tentativeGScore = GetGScore(currentCell) + 1;
                         if(tentativeGScore < GetGScore(neighbour))
@@ -109,7 +109,20 @@ namespace RandomMazeGenerator.Core
 
         private MazeCell GetCellWithLowestFScoreInOpenSet()
         {
-            return _openSet.OrderBy(GetFScore).First();
+            MazeCell cellWithLowestFScore = null;
+            int lowestFScore = int.MaxValue;
+
+            foreach (var cell in _openSet)
+            {
+                int fScore = GetFScore(cell);
+                if (fScore < lowestFScore)
+                {
+                    lowestFScore = fScore;
+                    cellWithLowestFScore = cell;
+                }
+            }
+
+            return cellWithLowestFScore;
         }
     }
 }
