@@ -22,7 +22,7 @@ namespace RandomMazeGenerator.Skia.WPF
         [HeaderPlacement(HeaderPlacement.Above)]
         public int StepsPerUpdateSolving { get; set; } = 10;
 
-        public bool VizualizeStack { get; set; } = false;
+        public bool VizualizeStack { get; set; } = true;
         public bool DisplayFPS { get; set; } = true;
     }
 
@@ -57,13 +57,13 @@ namespace RandomMazeGenerator.Skia.WPF
 
             PropertyGrid.SelectedObject = Settings;
 
-            var mazeWidth = 50;
+            var mazeWidth = 100;
             _maze = new Maze(mazeWidth);
             _cellWidth = 2f/mazeWidth;
 
             _solvingAlgorithm = new AStarPathFindingAlgorithm(_maze);
             _algorithm = new DepthFirstRecursiveBacktrackingMazeAlgorithm(_maze);
-            _algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
+            //_algorithm = new RandomizedPrimsMazeAlgorithm(_maze);
 
 
             _bestCellPaint = CreateFillPaint(SKColors.Yellow);
@@ -92,7 +92,7 @@ namespace RandomMazeGenerator.Skia.WPF
                 _algorithm.Step(Settings.StepsPerUpdate);
             else if(!_solvingAlgorithm.IsFinished)
                 _solvingAlgorithm.Step(Settings.StepsPerUpdateSolving);
-            _noiseOffset += 0.01;
+            _noiseOffset += 0.001;
 
             //SkiaElement.Dispatcher.Invoke(() => SkiaElement.InvalidateVisual());
             SkiaElement.InvalidateVisual();
@@ -113,11 +113,11 @@ namespace RandomMazeGenerator.Skia.WPF
 
             Parallel.ForEach(_maze.Cells, cell => { 
             {
-                //var v = (float)((_noise.GetValue(cell.X/5d, cell.Y/5d, _noiseOffset)+1) *0.5);
-                //float v1 = (127 + (v * 128));
-                //SKColor noiseColor = new SKColor(0, 0, (byte)Clamp(v1, 0, 255));
-                //_wallPaint.Color = noiseColor;
-                //_onStackPaint.Color = noiseColor;
+                var v = _noise.GetValue(cell.X, cell.Y, _noiseOffset);
+                double v1 = v * 255;
+                SKColor noiseColor = new SKColor(0, 0, (byte)v1);
+                _wallPaint.Color = noiseColor;
+                _onStackPaint.Color = noiseColor;
 
                 var topLeftX = cell.X * _cellWidth - 1;
                 var topLeftY = cell.Y * _cellHeight - 1;
