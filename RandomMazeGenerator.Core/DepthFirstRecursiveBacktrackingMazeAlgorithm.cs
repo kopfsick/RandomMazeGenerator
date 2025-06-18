@@ -6,6 +6,8 @@ namespace RandomMazeGenerator.Core
 {
     public class DepthFirstRecursiveBacktrackingMazeAlgorithm : StepableMazeAlgorithmBase
     {
+        public const string Name = "Depth First Recursive Backtracking";
+        
         private readonly Random _random;
         private readonly Maze _maze;
         private readonly Stack<MazeCell> cellStack;

@@ -6,6 +6,7 @@ namespace RandomMazeGenerator.Core
 {
     public class RandomizedPrimsMazeAlgorithm : StepableMazeAlgorithmBase
     {
+        public const string Name = "Randomized Prim's Algorithm";
         private readonly Random _random;
         private readonly Maze _maze;
         private readonly List<(MazeCell, MazeCell)> _adjacentCells;
