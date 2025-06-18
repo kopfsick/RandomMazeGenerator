@@ -4,15 +4,15 @@ namespace RandomMazeGenerator.Core
 {
     public abstract class StepableMazeAlgorithmBase : StepableAlgorithmBase
     {
-        private MazeCell _currentCell;
+        protected MazeCell CurrentCell { get; private set; }
 
         protected void SetCurrentCell(MazeCell cell)
         {
-            if(_currentCell != null)
-                _currentCell.IsCurrent = false;
+            if(CurrentCell != null)
+                CurrentCell.IsCurrent = false;
             if(cell != null)
                 cell.IsCurrent = true;
-            _currentCell = cell;
+            CurrentCell = cell;
         }
     }
 }

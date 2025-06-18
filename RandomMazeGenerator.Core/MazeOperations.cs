@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace RandomMazeGenerator.Core
@@ -60,6 +61,47 @@ namespace RandomMazeGenerator.Core
         public static int ToIndex(int x, int y, int width)
         {
             return width * y + x;
+        }
+
+        public static bool HasWallInDirection(Maze maze, MazeCell currentCell, string direction)
+        {
+            switch(direction.ToLower())
+            {
+                case "left":
+                    return currentCell.HasLeftWall;
+                case "up":
+                    return currentCell.HasTopWall;
+                case "right":
+                    return currentCell.HasRightWall;
+                case "down":
+                    return currentCell.HasBottomWall;
+                default:
+                    throw new ArgumentException($"Invalid direction: {direction}. Use 'left', 'up', 'right', or 'down'.");
+            }
+        }
+        
+        public static MazeCell GetNeighbour(Maze maze, MazeCell currentCell, string direction)
+        {
+            switch(direction.ToLower())
+            {
+                case "left":
+                    if(currentCell.X > 0)
+                        return maze.Cells[ToIndex(currentCell.X - 1, currentCell.Y, maze.Width)];
+                    break;
+                case "up":
+                    if(currentCell.Y > 0)
+                        return maze.Cells[ToIndex(currentCell.X, currentCell.Y - 1, maze.Width)];
+                    break;
+                case "right":
+                    if(currentCell.X < maze.Width - 1)
+                        return maze.Cells[ToIndex(currentCell.X + 1, currentCell.Y, maze.Width)];
+                    break;
+                case "down":
+                    if(currentCell.Y < maze.Height - 1)
+                        return maze.Cells[ToIndex(currentCell.X, currentCell.Y + 1, maze.Width)];
+                    break;
+            }
+            return null;
         }
     }
 }
