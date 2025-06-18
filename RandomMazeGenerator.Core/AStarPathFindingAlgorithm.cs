@@ -4,8 +4,7 @@ using System.Linq;
 
 namespace RandomMazeGenerator.Core
 {
-
-    public class AStarPathFindingAlgorithm : StepableMazeAlgorithmBase
+    public class AStarPathFindingAlgorithm : StepableMazeAlgorithmBase, IMazeSolvingAlgorithm
     {
         private HashSet<MazeCell> _openSet;
         private Dictionary<MazeCell, MazeCell> _cameFrom;
@@ -111,5 +110,7 @@ namespace RandomMazeGenerator.Core
         {
             return _openSet.OrderBy(GetFScore).First();
         }
+
+        public const string Name = "A* Path Finding";
     }
 }
