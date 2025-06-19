@@ -11,9 +11,9 @@ namespace RandomMazeGenerator.Core
         private readonly Maze _maze;
         private readonly List<(MazeCell, MazeCell)> _adjacentCells;
 
-        public RandomizedPrimsMazeAlgorithm(Maze maze, Random random = null)
+        public RandomizedPrimsMazeAlgorithm(Maze maze, int? seed = null)
         {
-            _random = random ?? new Random();
+            _random = seed.HasValue ? new Random(seed.Value) : new Random();
             _maze = maze;
 
             _adjacentCells = new List<(MazeCell, MazeCell)>();

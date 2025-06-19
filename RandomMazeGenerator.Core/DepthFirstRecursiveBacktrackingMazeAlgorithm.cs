@@ -12,9 +12,9 @@ namespace RandomMazeGenerator.Core
         private readonly Maze _maze;
         private readonly Stack<MazeCell> cellStack;
 
-        public DepthFirstRecursiveBacktrackingMazeAlgorithm(Maze maze, Random random = null)
+        public DepthFirstRecursiveBacktrackingMazeAlgorithm(Maze maze, int? seed = null)
         {
-            _random = random ?? new Random();
+            _random = seed.HasValue ? new Random(seed.Value) : new Random();
             _maze = maze;
             cellStack = new Stack<MazeCell>();
 
