@@ -142,8 +142,8 @@ public class RaylibMazeApp
         var maze = new Maze(mazeRunSettings.MazeWidth);
         IStepableAlgorithm algorithm = mazeRunSettings.Algortihm switch
         {
-            DepthFirstRecursiveBacktrackingMazeAlgorithm.Name => new DepthFirstRecursiveBacktrackingMazeAlgorithm(maze),
-            RandomizedPrimsMazeAlgorithm.Name => new RandomizedPrimsMazeAlgorithm(maze),
+            DepthFirstRecursiveBacktrackingMazeAlgorithm.Name => new DepthFirstRecursiveBacktrackingMazeAlgorithm(maze, mazeRunSettings.Seed),
+            RandomizedPrimsMazeAlgorithm.Name => new RandomizedPrimsMazeAlgorithm(maze, mazeRunSettings.Seed),
             _ => throw new NotSupportedException($"Algorithm {mazeRunSettings.Algortihm} is not supported.")
         };
 
@@ -224,6 +224,7 @@ public class MazeRunSettings
     public bool VisualizeStack = false;
     public string Algortihm = DepthFirstRecursiveBacktrackingMazeAlgorithm.Name;
     public string SolvingAlgortihm = KeepRightPathFindingAlgorithm.Name;
+    public int? Seed { get; set; } = 97617986;
     
     public enum AlgorithmSpeed
     {
