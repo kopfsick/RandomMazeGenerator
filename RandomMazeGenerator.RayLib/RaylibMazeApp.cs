@@ -90,10 +90,10 @@ public class RaylibMazeApp
 
                 if (cell.HasBeenVisited)
                 {
-                    if (cell.HasLeftWall)
+                    if (cell.X == 0 && cell.HasLeftWall)
                         Raylib.DrawLineEx(topLeftCorner, bottomLeftCorner, 2, wallColor);
 
-                    if (cell.HasTopWall)
+                    if (cell.Y == 0 && cell.HasTopWall)
                         Raylib.DrawLineEx(topLeftCorner, topRightCorner, 2, wallColor);
 
                     if (cell.HasRightWall)
