@@ -82,8 +82,8 @@ public class RaylibMazeApp
 
                 //Colors
                 var noiseValue = noise.GetPerlin(cell.X * 2, cell.Y * 2, totalTime * 50);
-                var noise0To1 = Raymath.Remap(noiseValue, -1, 1, 0, 1);
-                var wallColor = new Color((int)(noise0To1 * 254), 0, 255);
+                //var noise0To1 = noiseValue;//Raymath.Remap(noiseValue, -1, 1, 0, 1);
+                var wallColor = Color.Blue;//new Color((int)(noise0To1 * 254), 0, 255);
 
                 if (cell.IsCurrent && (!AppState.Algorithm.IsFinished || !AppState.SolvingAlgorithm.IsFinished))
                     Raylib.DrawRectangleRec(cellRectangle, Color.Orange);
@@ -110,31 +110,32 @@ public class RaylibMazeApp
                 }
             }
 
-            MazeCell? previousCell = null;
-            foreach (var currentBestCell in AppState.SolvingAlgorithm.CurrentBestPath)
-            {
-                if (previousCell == null)
-                {
-                    previousCell = currentBestCell;
-                    continue;
-                }
-
-                var centerCurrent = new Vector2(
-                    currentBestCell.X * cellWidth + halfCellWidth,
-                    currentBestCell.Y * cellHeight + halfCellHeight);
-                var centerPrevious = new Vector2(
-                    previousCell.X * cellWidth + halfCellWidth,
-                    previousCell.Y * cellHeight + halfCellHeight);
-
-                Raylib.DrawLineEx(centerCurrent, centerPrevious, 1, Color.Yellow);
-                previousCell = currentBestCell;
-            }
+            //DrawSolvedPath(cellWidth, halfCellWidth, cellHeight, halfCellHeight);
+            DrawSolvedPathOptimized(cellWidth, halfCellWidth, cellHeight, halfCellHeight);
 
             RenderGui(mazeWidthPixels, uiWidthPixels, height, MazeRunSettings);
+            //Raylib.DrawFPS(mazeWidthPixels,10);
 
             rlImGui.End();
             Raylib.EndDrawing();
         }
+    }
+
+    private void DrawSolvedPathOptimized(int cellWidth, int halfCellWidth, int cellHeight, int halfCellHeight)
+    {
+        var points = new Vector2[AppState.SolvingAlgorithm.CurrentBestPath.Count];
+        
+        for (var index = 0; index < AppState.SolvingAlgorithm.CurrentBestPath.Count; index++)
+        {
+            var currentBestCell = AppState.SolvingAlgorithm.CurrentBestPath[index];
+            var centerCurrent = new Vector2(
+                currentBestCell.X * cellWidth + halfCellWidth,
+                currentBestCell.Y * cellHeight + halfCellHeight);
+
+            points[index] = centerCurrent;
+        }
+        
+        Raylib.DrawLineStrip(points, points.Length, Color.Yellow);
     }
 
     private void InitializeAppState(MazeRunSettings mazeRunSettings)
@@ -223,7 +224,7 @@ public class MazeRunSettings
     public int StepsPerSecondsSolving = 400;
     public bool VisualizeStack = false;
     public string Algortihm = DepthFirstRecursiveBacktrackingMazeAlgorithm.Name;
-    public string SolvingAlgortihm = KeepRightPathFindingAlgorithm.Name;
+    public string SolvingAlgortihm = AStarPathFindingAlgorithm.Name;
     public int? Seed { get; set; } = 97617986;
     
     public enum AlgorithmSpeed
